@@ -20,7 +20,9 @@ from data_loader import SalObjDataset
 
 from model import U2NET # full size version 173.6 MB
 from model import U2NETP # small version u2net 4.7 MB
-
+import argparse
+import shutil
+import os
 # normalize the predicted SOD probability map
 def normPRED(d):
     ma = torch.max(d)
@@ -53,13 +55,25 @@ def save_output(image_name,pred,d_dir):
 
 def main():
 
+    # Set up the argument parser
+    parser = argparse.ArgumentParser(description="Copy folder from input to output.")
+    
+    # Add arguments for input and output folders
+    parser.add_argument('-i', '--input', required=True, help="Path to the input folder")
+    parser.add_argument('-o', '--output', required=True, help="Path to the output folder")
+    
+    # Parse the arguments
+    args = parser.parse_args()
+    
+    input_folder = args.input
+    output_folder = args.output
     # --------- 1. get image path and name ---------
     model_name='u2net'#u2netp
 
 
 
-    image_dir = os.path.join(os.getcwd(), 'test_data', 'test_images')
-    prediction_dir = os.path.join(os.getcwd(), 'test_data', model_name + '_results' + os.sep)
+    image_dir = input_folder
+    prediction_dir = output_folder
     model_dir = os.path.join(os.getcwd(), 'saved_models', model_name, model_name + '.pth')
 
     img_name_list = glob.glob(image_dir + os.sep + '*')
